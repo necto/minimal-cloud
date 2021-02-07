@@ -1,0 +1,4 @@
+[submodule "webdav-organice/organice"]
+	path = webdav-organice/organice
+	url = gh:necto/organice
+	branch = master
