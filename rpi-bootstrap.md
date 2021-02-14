@@ -1,3 +1,19 @@
+# Intro
+This manual describes the installation of a home organice web server accessible via HTTPS.
+The server uses syncthing to synchronize your org files with your other machines (desktop, work machine).
+The server uses let's encrypt certificate for a secure HTTPS connection.
+The server uses nginx WebDAV plugin to serve the org files to the organice frontend running on your phone/browser.
+
+I embarked onto this path after having using Dropbox and hitting the limitation of its free plan (no more than two devices) once I got a third (work) machine.
+This is mostly the work notes in case I need to create a similar set-up again.
+## Prerequisites
+This manual assumes that you have:
+- a domain name with A and AAAA records,
+- a public-accessible IPv6 address,
+- a private IPv4 address that can access the internet,
+- a Raspberry Pi (rpi) 2 model B (arm32v6-based),
+- a compatible SD card, and an SD-card reader to flush it.
+
 # Initial setup
 ## Initialize the SD card: 
 The following command downloads a light version of raspios, and flushes it into the sdcard (/dev/mmcblk0):
