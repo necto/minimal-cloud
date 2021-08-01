@@ -67,6 +67,16 @@ sudo dpkg-reconfigure locales
 
 
 # Install the tools
+Install the syncthing repository following the steps on https://apt.syncthing.net/ in order to get the up-to-date protocol (otherwise it won't connect with syncthing-android and other clients):
+```
+# Add the release PGP keys:
+sudo curl -s -o /usr/share/keyrings/syncthing-archive-keyring.gpg https://syncthing.net/release-key.gpg
+# Add the "stable" channel to your APT sources:
+echo "deb [signed-by=/usr/share/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
+# Increase preference of Syncthing's packages ("pinning")
+printf "Package: *\nPin: origin apt.syncthing.net\nPin-Priority: 990\n" | sudo tee /etc/apt/preferences.d/syncthing
+```
+
 Install the packages:
 - `syncthing` - to synchronize files with other machines
 - `nginx` (with `nginx-extras` and `apache2-utils`) - to serve the files via WebDAV
