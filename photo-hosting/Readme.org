@@ -117,5 +117,33 @@ Use it to configure client on QNAP NAS, in QVPN Service 3:
 
 If all works, when you enable the "reverse-proxy" connection both Tx and Rx values should go up.
 Additionally running sudo wg should show some traffic from the peer.
-* DNS
-* Reverse proxy
+
+Now you can fetch the index.html page from the immich app on the VM:
+#+begin_src
+wget 10.66.67.2:2283
+head index.html
+#+end_src
+* DNS and Reverse proxy
+To obtain a TLS sertificate and enable secure HTTPS access, I need a domain name.
+I add just the "A" record for the domain name, as my Oracle instance is not configured for IPv6
+(but it could be, if necessary, in which case also configure AAAA).
+
+domain: photo.zaostrovnykh.ch
+A: 140.238.216.9
+TTL: 1h
+
+I will use [[https://caddyserver.com/][Caddy]] reverse proxy server.
+See[[file:caddy/][the configuration]] .
+Let's run it in docker:
+
+#+begin_src
+sudo apt install docker.io docker-compose-v2
+sudo usermod -aG docker $USER
+#+end_src
+
+Re-authenticate to get the docker group. Then:
+#+begin_src git clone https://github.com/necto/minimal-cloud
+cd ~/minimal-cloud/photo-hosting/caddy/
+docker volume create caddy_data
+docker compose up -d
+#+end_src
