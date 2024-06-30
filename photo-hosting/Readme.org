@@ -147,3 +147,21 @@ cd ~/minimal-cloud/photo-hosting/caddy/
 docker volume create caddy_data
 docker compose up -d
 #+end_src
+
+I can use
+#+begin_src
+docker compose logs -f
+#+end_src
+To check how caddy manages to obtain the TLS sertificate from letsencrypt.
+
+A few moments later, photo.zaostrovnykh.ch is accessible over https!
+
+* Immich config
+I use the storage template
+#+begin_example
+{{y}}/{{y}}-{{MM}}-{{dd}}/{{hh}}h-{{filename}}
+#+end_example
+And configure user label for each user to make it easier to navigate in the file system.
+
+Could set the greeting as explained here:
+https://github.com/immich-app/immich/discussions/1634
