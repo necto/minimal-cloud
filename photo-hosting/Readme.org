@@ -64,7 +64,24 @@ https://github.com/angristan/wireguard-install/
 #+begin_src
 git clone https://github.com/necto/minimal-cloud
 cd minimal-cloud/photo-hosting/vpn
+sudo bash wireguard-install.sh
 #+end_src
+Answer the script's queries.
+#+begin_example
+IPv4 public address: 140.238.216.9
+Public interface: ens3
+WireGuard interface name: wg0
+Server WireGuard IPv4: 10.66.67.1
+Server WireGuard IPv6: fd42:42:42::1
+Server WireGuard port [1-65535]: 51820
+First DNS resolver to use for the clients: 1.1.1.1
+Second DNS resolver to use for the clients (optional): 1.0.0.1
+Allowed IPs: 10.66.67.1/24
+
+Client name: qnap
+Client WireGuard IPv4: 10.66.67.2
+Client WireGuard IPv6: fd42:42:42::2
+#+end_example
 
 Then configure port forwarding in Oracle Cloud Network:
 - Virtual Cloud Networks
@@ -72,7 +89,7 @@ Then configure port forwarding in Oracle Cloud Network:
 - Add Ingress Rules:
   - Source Type: CIDR
   - Source CIDR: 0.0.0.0/0
-  - IP Protocoal: TCP
+  - IP Protocoal: UDP (!WireGuard relies on UDP, not TCP)
   - Source Port Range: empty
   - Destination Port Range: 51820
   - Description: "WireGuard listen port"
@@ -80,18 +97,25 @@ Then configure port forwarding in Oracle Cloud Network:
   - CIDR; 0.0.0.0/0; TCP; dest port=80
   - CIDR; 0.0.0.0/0; TCP; dest port=443
 
-Then on QNAP NAS, in QVPN Service 3:
+Print the client configuration:
+#+begin_src
+cat /home/ubuntu/wg0-client-qnap.conf
+#+end_src
+Use it to configure client on QNAP NAS, in QVPN Service 3:
 - Select VPN Client -> VPN Connection Profiles
 - Add -> WireGuard
   - Server name: reverse-proxy
-  - Private key: from the private-qnap-key
+  - Private key: from the printed config
   - IP address: 10.66.67.2
-  - "Generate Keypairs" should set Public key to the same value as in public-qnap-key
+  - Press "Generate Keypairs"
   - Listen Port: empty
-  - DNS Server: 1.1.1.1
-  - Peer Settings/Public key: key from public-server-key
+  - DNS Server: 1.1.1.1,1.0.0.1
+  - Peer Settings/Public key: key from the printed config
   - Peer Settings/Endpoint: public IP of the VM : port (140.238.216.9:51820)
+  - Preshaed key: from the printed config
+  - Allowed IPs: 10.66.67.1/24
 
 If all works, when you enable the "reverse-proxy" connection both Tx and Rx values should go up.
+Additionally running sudo wg should show some traffic from the peer.
 * DNS
 * Reverse proxy
