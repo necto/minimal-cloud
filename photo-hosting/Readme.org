@@ -1,0 +1,29 @@
+* Photo hosting
+Using [[https://immich.app/][immich.app]] see[[file:immich-app/][immich-app]] for the configuation
+
+- Follow https://immich.app/docs/install/docker-compose to get the [[file:immich-app/original-docker-compose.yml][original-immich docker-compose.yml]]
+- Since QNAP Container station does not support multiple files (at least I could not find way to have it)
+  I had to inline the [[file:immich-app/.env][.env]] into the docker-compose file.
+  A bit of additional massaging gave me the [[file:immich-app/qnap-ready-docker-compose.yml][QNAP-ready config]]
+  (note that I redacted out the DB_PASSWORD and POSTGRESS_PASSWORD env variables (3 instances))
+  Use password generator to fill those in before deploying.
+- Create the folder for the photo library and map the /usr/src/app/upload folder to it in the immich-server configuration.
+  In my case it is /share/reddrive-synced/photo/immich
+- Create the folder for the database and map to the /var/lib/postgresql/data in the database service config.
+  In my case it is /share/Ephemeral/immich-db
+
+In QNAP, open Container Station, and create an application, upload the yml file
+modify the name, for example, "immich-photos"
+In the advanced settings:
+- Activate "Default Web URL Port"
+  - Service: immich-server
+  - Default web URL port: 2283
+- Set the limits for CPU (3) and RAM (2495MB)
+
+It takes QNAP a couple of minutes to start the container.
+Once started, it should be accessible over "http://<qnap local ip>:2283"
+You you should see "Getting Started" button, but do not create admin credential yet.
+The connection is not secured, so let's set up VPN and HTTPS reverse proxy.
+* VPN
+* DNS
+* Reverse proxy
