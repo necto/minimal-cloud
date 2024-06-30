@@ -24,6 +24,74 @@ It takes QNAP a couple of minutes to start the container.
 Once started, it should be accessible over "http://<qnap local ip>:2283"
 You you should see "Getting Started" button, but do not create admin credential yet.
 The connection is not secured, so let's set up VPN and HTTPS reverse proxy.
-* VPN
+* VPN host on a public cloud VM
+I use free Oracle Cloud offering.
+Open the "Compute" in the cloud.oracle.com admin panel.
+Then "instances", "Create instance"
+Name, for example, "reverse-proxy-qnap"
+In "Image and shape",
+select image: "Canonical Ubuntu 22.04"
+Shape: the default "VM.Standard.E2.1.Micro" (it should be free)
+In "Primary VNIC information"
+Select "Create new virtual cloud network" and name it, for example, "reverse-proxy-net"
+name the new public subnet "reverse-proxy-subnet"
+
+In the "Primary VNIC IP addresses" "Automatically assign public IPv4 address" should be selected.
+
+In the "Add SSH keys"
+select "Upload public key files" and upload the ~/.ssh/....pub file
+
+The rest is by default.
+
+In a few minutes the instance should boot.
+I've got public ip address 140.238.216.9
+So now I can SSH into it with
+#+begin_src
+ssh ubuntu@140.238.216.9
+#+end_src
+
+Now I can install WireGuard to create VPN.
+#+begin_src
+sudo apt update
+sudo apt upgrade
+sudo apt install git wireguard iptables resolvconf qrencode
+#+end_src
+
+Creating VPN server:
+Using the installer script from
+https://github.com/angristan/wireguard-install/
+
+#+begin_src
+git clone https://github.com/necto/minimal-cloud
+cd minimal-cloud/photo-hosting/vpn
+#+end_src
+
+Then configure port forwarding in Oracle Cloud Network:
+- Virtual Cloud Networks
+- Select "reverse-proxy-net" -> "reverse-proxy-subnet" -> Defalut security list
+- Add Ingress Rules:
+  - Source Type: CIDR
+  - Source CIDR: 0.0.0.0/0
+  - IP Protocoal: TCP
+  - Source Port Range: empty
+  - Destination Port Range: 51820
+  - Description: "WireGuard listen port"
+- Then, for the reverse proxy, let us add two more rules:
+  - CIDR; 0.0.0.0/0; TCP; dest port=80
+  - CIDR; 0.0.0.0/0; TCP; dest port=443
+
+Then on QNAP NAS, in QVPN Service 3:
+- Select VPN Client -> VPN Connection Profiles
+- Add -> WireGuard
+  - Server name: reverse-proxy
+  - Private key: from the private-qnap-key
+  - IP address: 10.66.67.2
+  - "Generate Keypairs" should set Public key to the same value as in public-qnap-key
+  - Listen Port: empty
+  - DNS Server: 1.1.1.1
+  - Peer Settings/Public key: key from public-server-key
+  - Peer Settings/Endpoint: public IP of the VM : port (140.238.216.9:51820)
+
+If all works, when you enable the "reverse-proxy" connection both Tx and Rx values should go up.
 * DNS
 * Reverse proxy
