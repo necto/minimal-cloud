@@ -1,0 +1,3 @@
+test-immich.zaostrovnykh.ch {
+    reverse_proxy http://10.66.66.3:2283
+}
