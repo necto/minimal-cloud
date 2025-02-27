@@ -1,0 +1,34 @@
+# Config for the mercury laptop repurposed as a home server
+autoinstall:
+  version: 1
+  interactive-sections:
+    - identity
+  identity:
+    hostname: "mercury_srv"
+    username: "necto"
+  ssh:
+    install-server: true
+    allow-pw: false
+    authorized-keys:
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEzDdoIy+s+kgn4Y6N4qLzbauIGywAGYPDvSyAFvfZ9r necto@frame"
+  storage:
+    layout:
+      name: direct
+  packages:
+    - guix
+    - git
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+  timezone: Europe/Zurich
+  updates: all
+  network:
+    version: 2
+    ethernets:
+      eth0:
+        dhcp4: true
+      wlp4s0:
+        dhcp4: true
+  late-commands:
+    - guix pull
+    - echo 'Installation complete'
