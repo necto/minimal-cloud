@@ -3,9 +3,6 @@ autoinstall:
   version: 1
   interactive-sections:
     - identity
-  identity:
-    hostname: "mercury_srv"
-    username: "necto"
   ssh:
     install-server: true
     allow-pw: false
