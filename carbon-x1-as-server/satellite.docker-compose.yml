@@ -8,6 +8,7 @@ services:
       - wyoming-network
     ports:
       - "10400:10400"
+    restart: unless-stopped
     command:
       - "--preload-model"
       - "ok_nabu"
@@ -25,6 +26,7 @@ services:
       - audio
     volumes:
       - "$PWD/tink_harmony.wav:/tink_harmony.wav"
+    restart: unless-stopped
     command:
       - "--name"
       - "my-satellite"
@@ -64,6 +66,7 @@ services:
       - "10200:10200"
     volumes:
       - "$HOME/piperdata:/data"
+    restart: unless-stopped
     command:
       - "--voice"
       - "en_US-lessac-medium"
