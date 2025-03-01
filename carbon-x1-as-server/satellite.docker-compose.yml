@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  wakeword:
+    image: rhasspy/wyoming-openwakeword
+    container_name: wakeword
+    networks:
+      - wyoming-network
+    ports:
+      - "10400:10400"
+    command:
+      - "--preload-model"
+      - "ok_nabu"
+
+  satellite:
+    image: sker65/wyoming-satellite
+    container_name: satellite
+    networks:
+      - wyoming-network
+    ports:
+      - "10700:10700"
+    devices:
+      - "/dev/snd:/dev/snd"
+    group_add:
+      - audio
+    command:
+      - "--name"
+      - "my-satellite"
+      - "--uri"
+      - "tcp://0.0.0.0:10700"
+      - "--mic-command"
+      - "arecord -D plughw:0,0 -r 16000 -f S16_LE -t raw"
+      - "--snd-command"
+      - "aplay -D plughw:0,0 -r 16000 -f S16_LE -t raw"
+      - "--wake-uri"
+      - "tcp://wakeword:10400"
+      - "--wake-word-name"
+      - "ok_nabu"
+
+  whisper:
+    image: rhasspy/wyoming-whisper
+    container_name: whisper
+    restart: unless-stopped
+    ports:
+      - "10300:10300"
+    volumes:
+      - "$HOME/whisperdata:/data"
+    command:
+      - "--model"
+      - "tiny.en"
+      - "--language"
+      - "en"
+
+  piper:
+    image: rhasspy/wyoming-piper
+    container_name: piper
+    ports:
+      - "10200:10200"
+    volumes:
+      - "$HOME/piperdata:/data"
+    command:
+      - "--voice"
+      - "en_US-lessac-medium"
+
+networks:
+  wyoming-network:
+    driver: bridge
