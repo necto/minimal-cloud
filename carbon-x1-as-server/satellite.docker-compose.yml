@@ -25,7 +25,8 @@ services:
     group_add:
       - audio
     volumes:
-      - "$PWD/tink_harmony.wav:/tink_harmony.wav"
+      - "$PWD/wake-detected.wav:/wake-detected.wav"
+      - "$PWD/start-speaking.wav:/start-speaking.wav"
     restart: unless-stopped
     command:
       - "--name"
@@ -33,9 +34,9 @@ services:
       - "--uri"
       - "tcp://0.0.0.0:10700"
       - "--awake-wav"
-      - "/tink_harmony.wav"
+      - "/wake-detected.wav"
       - "--done-wav"
-      - "/tink_harmony.wav"
+      - "/start-speaking.wav"
       - "--mic-command"
       - "arecord -D plughw:0,0 -r 16000 -f S16_LE -t raw"
       - "--snd-command"
