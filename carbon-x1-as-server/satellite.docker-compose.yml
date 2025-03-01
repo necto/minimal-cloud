@@ -23,11 +23,17 @@ services:
       - "/dev/snd:/dev/snd"
     group_add:
       - audio
+    volumes:
+      - "$PWD/tink_harmony.wav:/tink_harmony.wav"
     command:
       - "--name"
       - "my-satellite"
       - "--uri"
       - "tcp://0.0.0.0:10700"
+      - "--awake-wav"
+      - "/tink_harmony.wav"
+      - "--done-wav"
+      - "/tink_harmony.wav"
       - "--mic-command"
       - "arecord -D plughw:0,0 -r 16000 -f S16_LE -t raw"
       - "--snd-command"
