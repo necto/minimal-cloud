@@ -26,7 +26,6 @@ services:
       - audio
     volumes:
       - "$PWD/wake-detected.wav:/wake-detected.wav"
-      - "$PWD/start-speaking.wav:/start-speaking.wav"
     restart: unless-stopped
     command:
       - "--name"
@@ -35,8 +34,6 @@ services:
       - "tcp://0.0.0.0:10700"
       - "--awake-wav"
       - "/wake-detected.wav"
-      - "--streaming-stop-command"
-      - "aplay -D plughw:0,0 /start-speaking.wav"
       - "--mic-command"
       - "arecord -D plughw:0,0 -r 16000 -f S16_LE -t raw"
       - "--snd-command"
