@@ -11,7 +11,7 @@ services:
       - "$HOME/whisperdata:/data"
     command:
       - "--model"
-      - "tiny.en"
+      - "small.en"
       - "--language"
       - "en"
 
