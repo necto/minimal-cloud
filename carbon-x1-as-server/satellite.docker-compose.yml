@@ -9,9 +9,11 @@ services:
     ports:
       - "10400:10400"
     restart: unless-stopped
+    volumes:
+      - "$PWD/wake-model:/custom"
     command:
-      - "--preload-model"
-      - "ok_nabu"
+      - "--custom-model-dir"
+      - "/custom"
 
   satellite:
     image: sker65/wyoming-satellite
