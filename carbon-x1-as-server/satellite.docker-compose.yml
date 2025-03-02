@@ -40,7 +40,7 @@ services:
       - "--mic-command"
       - "arecord -D plughw:0,0 -r 16000 -f S16_LE -t raw"
       - "--snd-command"
-      - "aplay -D plughw:0,0 -r 20000 -f S16_LE -t raw" # higher -r value - higher and faster voice
+      - "aplay -D plughw:0,0 -r 28000 -f S16_LE -t raw" # higher -r value - higher and faster voice
       - "--wake-uri"
       - "tcp://wakeword:10400"
       - "--wake-word-name"
