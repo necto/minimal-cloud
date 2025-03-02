@@ -25,4 +25,4 @@ services:
     restart: unless-stopped
     command:
       - "--voice"
-      - "en_US-lessac-medium"
+      - "en_US-amy-medium"
